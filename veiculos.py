@@ -45,8 +45,8 @@ class Veiculo:
 
                 self.embarcando = False
                 self.emestacao = False
-                aux = self.trocafaixa(malha, listabus, 1, 0)
-                self.acelera(aux, listabus, listaestacao)
+                self.trocafaixa(malha, listabus, 1, 0)
+                self.acelera(malha, listabus, listaestacao)
 
             else:
                 self.embarque -= 1
@@ -58,20 +58,29 @@ class Veiculo:
                 novavel = self.velatual - 1
                 for est in listaestacao:
                     aa = malha[1][est.posicao + est.vagafrente]
-                    if aa != 0 :#se plataforma 1 esta vazia (bugado, veiculo nao entra na estacao)
-                        if (est.posicao + est.vagafrente) - (self.posy + self.tam) <= 2:
-                            malha = self.trocafaixa(malha, listabus, 0, 1)
-                            self.embarcando = True
-                            self.embarque = random.randint(self.minemb, self.maxemb)
+                    ab = malha[1][est.posicao + est.vagatras]
+                    if aa == 0 or ab == 0 :#se plataforma 1 esta vazia (bugado, veiculo nao entra na estacao)
+                        if (est.posicao + est.vagatras) == 0:
+                            if (est.posicao + est.vagatras) - (self.posy + self.tam) <= 1:
+                                self.trocafaixa(malha, listabus, 0, 1)
+                                self.embarcando = True
+                                self.embarque = random.randint(self.minemb, self.maxemb)
+
+                        else:
+                            if (est.posicao + est.vagafrente) - (self.posy + self.tam) <= 1:
+                                self.trocafaixa(malha, listabus, 0, 1)
+                                self.embarcando = True
+                                self.embarque = random.randint(self.minemb, self.maxemb)
 
                     else:
-                        if (est.posicao + est.vagafrente) - (self.posy + self.tam) <= 2 and (
-                                est.posicao + est.vagafrente) - (self.posy + self.tam) > 0:#se plataforma 2 esta vazia
-                            malha = self.trocafaixa(malha, listabus, 0, 1)
-                            self.embarque = random.randint(self.minemb, self.maxemb)
-                            self.embarcando = True
+                        self.velatual = 0
+                        novavel = 1
+ ##                       if (est.posicao + est.vagatras) - (self.posy + self.tam) <= 2 and (
+ ##                               est.posicao + est.vagatras) - (self.posy + self.tam) > 0:#se plataforma 2 esta vazia
+ ##                           self.trocafaixa(malha, listabus, 0, 1)
+ ##                           self.embarque = random.randint(self.minemb, self.maxemb)
+ ##                           self.embarcando = True
 
-                    novavel = 0
 
         else:
             if self.posx == 0:#se bus esta na faixa normal
@@ -81,11 +90,13 @@ class Veiculo:
                     if aux1 == 0 and self.velatual < self.velmaxima and aux2 == 0:
                         novavel = self.velatual + 1
 
-                    elif malha[self.posx][self.posy + self.tam + i] != 0:#reduz velocidade
+                    elif malha[self.posx][self.posy + self.tam + i] != 0 and self.velatual > 0:#reduz velocidade
                         for j in listabus:
-                            if j.posy - (self.posy + self.tam) < self.velatual:
-                                self.velatual = int((j.posy - (self.posy + self.tam)) / 2)
-                                novavel = self.velatual
+                            if j.posy > self.posy:
+                                if j.posy - (self.posy + self.tam) < self.velatual:
+                                    self.velatual = int((j.posy - (self.posy + self.tam)) / 2)
+                                    novavel = self.velatual
+                                break
 
                     elif malha[2][self.posy + self.tam + i] != 0:
 

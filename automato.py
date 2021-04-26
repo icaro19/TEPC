@@ -77,6 +77,8 @@ class Automato:
                 vazio = False
                 break
 
+#        print(vazio)
+
         if vazio:
             for k in self.listabus:
                 if not k.busrodando:
@@ -87,6 +89,7 @@ class Automato:
                     k.posx = 0
                     k.posy = 0
                     k.printarbus()
+                    break
 
 
 
